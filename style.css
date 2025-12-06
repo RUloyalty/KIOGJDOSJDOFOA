@@ -1084,3 +1084,63 @@ button, .menu-card {
     -ms-overflow-style: none;
     scrollbar-width: none;
 }
+
+/* Дополнительные стили для уведомлений */
+.notification {
+    position: fixed;
+    top: calc(20px + var(--safe-area-top));
+    left: 50%;
+    transform: translateX(-50%);
+    background: var(--success);
+    color: var(--light);
+    padding: 14px 24px;
+    border-radius: 14px;
+    font-weight: bold;
+    z-index: 1000;
+    animation: fadeIn 0.3s ease, fadeIn 0.3s ease 2.7s reverse forwards;
+    max-width: 90%;
+    text-align: center;
+    font-size: 15px;
+    box-shadow: 0 6px 24px rgba(0,0,0,0.3);
+    border: 2px solid rgba(255,255,255,0.2);
+    line-height: 1.4;
+}
+
+.notification.critical {
+    background: var(--danger);
+    animation: criticalPulse 0.5s ease infinite alternate, fadeIn 0.3s ease, fadeIn 0.3s ease 2.7s reverse forwards;
+}
+
+@keyframes criticalPulse {
+    from { 
+        box-shadow: 0 0 10px var(--danger), 0 6px 24px rgba(0,0,0,0.3);
+    }
+    to { 
+        box-shadow: 0 0 20px var(--danger), 0 6px 24px rgba(0,0,0,0.3);
+    }
+}
+
+@keyframes floatUp {
+    0% { 
+        opacity: 0;
+        transform: translate(-50%, -50%) scale(0.8);
+    }
+    20% { 
+        opacity: 1;
+        transform: translate(-50%, -60%) scale(1);
+    }
+    80% { 
+        opacity: 1;
+        transform: translate(-50%, -60%) scale(1);
+    }
+    100% { 
+        opacity: 0;
+        transform: translate(-50%, -70%) scale(0.9);
+    }
+}
+
+.positive-feedback {
+    pointer-events: none;
+    font-size: 16px !important;
+    padding: 16px 28px !important;
+}
