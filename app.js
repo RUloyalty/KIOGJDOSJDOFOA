@@ -3,6 +3,8 @@ let userData = {
     yellowCoins: 1000,
     currentCharacter: 'Психика',
     characterLevel: 'basic',
+    characterExperience: 0,
+    characterExperienceToNext: 100,
     completedQuests: 0,
     totalSpins: 0,
     totalEarnings: 0,
@@ -26,10 +28,10 @@ let userData = {
     tamagotchi: {
         name: 'Дима',
         level: 'basic',
-        hunger: 80,
-        thirst: 80,
-        happiness: 80,
-        energy: 80,
+        hunger: 100,
+        thirst: 100,
+        happiness: 100,
+        energy: 100,
         lastFed: Date.now(),
         lastWatered: Date.now(),
         lastPlayed: Date.now(),
@@ -42,7 +44,8 @@ let userData = {
             upgrades: []
         },
         health: 100,
-        experience: 0
+        experience: 0,
+        deathPercentage: 0
     },
     notifications: []
 };
@@ -112,6 +115,7 @@ function initApp() {
     updateUI();
     updateTamagotchiUI();
     updateTamagotchiImage();
+    updateDevButtons();
 }
 
 function initTelegramWebApp() {
@@ -283,6 +287,15 @@ function setupEventListeners() {
         window.sleepTamagotchi = sleepTamagotchi;
     }, 100);
     
+    // 11. Кнопки разработки
+    setTimeout(() => {
+        window.addCoins = addCoins;
+        window.levelUp = levelUp;
+        window.completeAllQuests = completeAllQuests;
+        window.fillTamagotchi = fillTamagotchi;
+        window.evolveTamagotchi = evolveTamagotchi;
+    }, 100);
+    
     console.log('✅ Обработчики настроены');
 }
 
@@ -382,6 +395,8 @@ function resetProgress() {
         yellowCoins: 1000,
         currentCharacter: 'Психика',
         characterLevel: 'basic',
+        characterExperience: 0,
+        characterExperienceToNext: 100,
         completedQuests: 0,
         totalSpins: 0,
         totalEarnings: 0,
@@ -405,10 +420,10 @@ function resetProgress() {
         tamagotchi: {
             name: 'Дима',
             level: 'basic',
-            hunger: 80,
-            thirst: 80,
-            happiness: 80,
-            energy: 80,
+            hunger: 100,
+            thirst: 100,
+            happiness: 100,
+            energy: 100,
             lastFed: Date.now(),
             lastWatered: Date.now(),
             lastPlayed: Date.now(),
@@ -421,7 +436,8 @@ function resetProgress() {
                 upgrades: []
             },
             health: 100,
-            experience: 0
+            experience: 0,
+            deathPercentage: 0
         },
         notifications: []
     };
@@ -494,7 +510,6 @@ function calculateSpinResult() {
 function handleWheelSpinEnd() {
     if (!isSpinning) return;
     
-    // ИСПРАВЛЕНИЕ: деньги даем ТОЛЬКО если множитель > 0
     if (currentSpinResult.multiplier > 0) {
         const winAmount = 600 * currentSpinResult.multiplier;
         userData.yellowCoins += winAmount;
@@ -737,11 +752,14 @@ function updateTamagotchiHealth() {
     healthScore += userData.tamagotchi.happiness * 0.25;
     healthScore += userData.tamagotchi.energy * 0.25;
     userData.tamagotchi.health = Math.max(0, Math.min(100, healthScore));
+    
+    userData.tamagotchi.deathPercentage = Math.max(0, 100 - userData.tamagotchi.health);
 }
 
 function checkTamagotchiAlive() {
     if (userData.tamagotchi.health <= 0) {
         userData.tamagotchi.isAlive = false;
+        userData.tamagotchi.deathPercentage = 100;
     }
 }
 
@@ -759,6 +777,9 @@ function checkTamagotchiNeeds() {
     }
     if (userData.tamagotchi.energy < 20) {
         addNotification('💤 Ваш питомец хочет спать!');
+    }
+    if (userData.tamagotchi.deathPercentage > 70) {
+        addNotification('💀 Питомец близок к смерти! Срочно помогите ему!');
     }
 }
 
@@ -940,10 +961,15 @@ function updateTamagotchiImage() {
 
 function updateTamagotchiUI() {
     const statusElement = document.getElementById('tamagotchiStatus');
+    const deathBar = document.getElementById('deathBar');
+    
     if (statusElement) {
         if (!userData.tamagotchi.isAlive) {
             statusElement.textContent = '💀 Мертв';
             statusElement.className = 'tamagotchi-status dead';
+            if (deathBar) {
+                deathBar.style.width = '100%';
+            }
             return;
         }
         
@@ -966,6 +992,22 @@ function updateTamagotchiUI() {
         
         statusElement.textContent = status;
         statusElement.className = statusClass;
+    }
+    
+    if (deathBar) {
+        deathBar.style.width = `${userData.tamagotchi.deathPercentage}%`;
+        if (userData.tamagotchi.deathPercentage > 70) {
+            deathBar.style.background = 'var(--danger)';
+        } else if (userData.tamagotchi.deathPercentage > 40) {
+            deathBar.style.background = 'var(--warning)';
+        } else {
+            deathBar.style.background = 'var(--success)';
+        }
+        
+        const deathPercentageText = document.getElementById('deathPercentageText');
+        if (deathPercentageText) {
+            deathPercentageText.textContent = `${Math.round(userData.tamagotchi.deathPercentage)}% до смерти`;
+        }
     }
     
     updateProgressBar('hungerBar', userData.tamagotchi.hunger);
@@ -1173,6 +1215,7 @@ function updateUI() {
     updateWorkScreen();
     updateWorkCooldown();
     updateCooldownDisplays();
+    updateDevButtons();
 }
 
 function updateMainScreen() {
@@ -1193,8 +1236,17 @@ function updateMainScreen() {
     
     const characterLevel = document.getElementById('characterLevel');
     if (characterLevel) {
-        const levelText = userData.characterLevel === 'basic' ? 'Базовый' : 'Средний';
+        const levelText = userData.characterLevel === 'basic' ? 'Базовый' : 
+                         userData.characterLevel === 'medium' ? 'Средний' : 'Профессионал';
         characterLevel.textContent = levelText;
+    }
+    
+    const characterExperienceBar = document.getElementById('characterExperienceBar');
+    const characterExperienceText = document.getElementById('characterExperienceText');
+    if (characterExperienceBar && characterExperienceText) {
+        const expPercentage = (userData.characterExperience / userData.characterExperienceToNext) * 100;
+        characterExperienceBar.style.width = `${Math.min(100, expPercentage)}%`;
+        characterExperienceText.textContent = `${userData.characterExperience}/${userData.characterExperienceToNext}`;
     }
     
     const questsProgress = document.getElementById('questsProgress');
@@ -1311,6 +1363,188 @@ function saveUserData() {
     } catch (e) {
         console.log('Ошибка сохранения:', e);
     }
+}
+
+// КНОПКИ РАЗРАБОТКИ
+function updateDevButtons() {
+    let devContainer = document.getElementById('devButtonsContainer');
+    if (!devContainer) {
+        devContainer = document.createElement('div');
+        devContainer.id = 'devButtonsContainer';
+        devContainer.style.position = 'fixed';
+        devContainer.style.bottom = '70px';
+        devContainer.style.right = '10px';
+        devContainer.style.zIndex = '9999';
+        devContainer.style.display = 'flex';
+        devContainer.style.flexDirection = 'column';
+        devContainer.style.gap = '5px';
+        devContainer.style.pointerEvents = 'auto';
+        document.body.appendChild(devContainer);
+    }
+    
+    devContainer.innerHTML = '';
+    
+    const devButtons = [
+        {
+            text: '💰 +100К',
+            onClick: () => addCoins(100000),
+            color: '#FFD700'
+        },
+        {
+            text: '⬆️ Уровень',
+            onClick: levelUp,
+            color: '#4CAF50'
+        },
+        {
+            text: '✅ Квесты',
+            onClick: completeAllQuests,
+            color: '#2196F3'
+        },
+        {
+            text: '🐱 Наполнить',
+            onClick: fillTamagotchi,
+            color: '#FF9800'
+        },
+        {
+            text: '🌟 Эволюция',
+            onClick: evolveTamagotchi,
+            color: '#9C27B0'
+        }
+    ];
+    
+    devButtons.forEach(button => {
+        const btn = document.createElement('button');
+        btn.textContent = button.text;
+        btn.style.background = button.color;
+        btn.style.color = 'white';
+        btn.style.border = 'none';
+        btn.style.borderRadius = '50%';
+        btn.style.width = '40px';
+        btn.style.height = '40px';
+        btn.style.fontSize = '12px';
+        btn.style.fontWeight = 'bold';
+        btn.style.cursor = 'pointer';
+        btn.style.boxShadow = '0 2px 5px rgba(0,0,0,0.3)';
+        btn.style.display = 'flex';
+        btn.style.alignItems = 'center';
+        btn.style.justifyContent = 'center';
+        btn.style.margin = '0';
+        btn.style.padding = '0';
+        btn.onclick = button.onClick;
+        devContainer.appendChild(btn);
+    });
+    
+    const toggleBtn = document.createElement('button');
+    toggleBtn.textContent = '👁️';
+    toggleBtn.style.background = '#333';
+    toggleBtn.style.color = 'white';
+    toggleBtn.style.border = 'none';
+    toggleBtn.style.borderRadius = '50%';
+    toggleBtn.style.width = '30px';
+    toggleBtn.style.height = '30px';
+    toggleBtn.style.fontSize = '10px';
+    toggleBtn.style.cursor = 'pointer';
+    toggleBtn.style.boxShadow = '0 2px 5px rgba(0,0,0,0.3)';
+    toggleBtn.style.marginTop = '5px';
+    toggleBtn.style.display = 'flex';
+    toggleBtn.style.alignItems = 'center';
+    toggleBtn.style.justifyContent = 'center';
+    
+    let buttonsVisible = true;
+    toggleBtn.onclick = () => {
+        buttonsVisible = !buttonsVisible;
+        devContainer.style.opacity = buttonsVisible ? '1' : '0.3';
+    };
+    
+    devContainer.appendChild(toggleBtn);
+}
+
+// Функции для кнопок разработки
+function addCoins(amount) {
+    userData.yellowCoins += amount;
+    userData.totalEarnings += amount;
+    showNotification(`💰 Добавлено ${amount.toLocaleString()} желткоинов!`);
+    saveUserData();
+    updateUI();
+}
+
+function levelUp() {
+    if (userData.characterLevel === 'basic') {
+        userData.characterLevel = 'medium';
+        userData.characterExperience = 0;
+        userData.characterExperienceToNext = 200;
+        showNotification('⬆️ Уровень повышен до Среднего!');
+    } else if (userData.characterLevel === 'medium') {
+        userData.characterLevel = 'pro';
+        userData.characterExperience = 0;
+        userData.characterExperienceToNext = 300;
+        showNotification('⬆️ Уровень повышен до Профессионала!');
+    } else {
+        userData.characterExperience += 50;
+        showNotification('📈 Опыт увеличен на 50!');
+    }
+    saveUserData();
+    updateUI();
+}
+
+function completeAllQuests() {
+    userData.completedQuests = 15;
+    const totalReward = quests.basic.reduce((sum, quest) => sum + quest.reward, 0);
+    userData.yellowCoins += totalReward;
+    userData.totalEarnings += totalReward;
+    
+    userData.questProgress = {
+        playTime: 5 * 60 * 60,
+        spins: 10,
+        workSessions: 3,
+        earningsBasic: 15000,
+        earningsMedium: 15000,
+        earningsPro: 15000,
+        clicks: 500
+    };
+    
+    showNotification('✅ Все задания выполнены!');
+    saveUserData();
+    updateUI();
+    updateQuestsScreen();
+}
+
+function fillTamagotchi() {
+    userData.tamagotchi.hunger = 100;
+    userData.tamagotchi.thirst = 100;
+    userData.tamagotchi.happiness = 100;
+    userData.tamagotchi.energy = 100;
+    userData.tamagotchi.health = 100;
+    userData.tamagotchi.deathPercentage = 0;
+    userData.tamagotchi.isAlive = true;
+    
+    userData.tamagotchi.lastFed = Date.now();
+    userData.tamagotchi.lastWatered = Date.now();
+    userData.tamagotchi.lastPlayed = Date.now();
+    userData.tamagotchi.lastSleep = Date.now();
+    
+    showNotification('🐱 Питомец полностью восстановлен!');
+    saveUserData();
+    updateTamagotchiUI();
+}
+
+function evolveTamagotchi() {
+    if (userData.tamagotchi.level === 'basic') {
+        userData.tamagotchi.level = 'medium';
+        userData.tamagotchi.name = 'Эсо';
+        userData.tamagotchi.experience = 100;
+    } else if (userData.tamagotchi.level === 'medium') {
+        userData.tamagotchi.level = 'pro';
+        userData.tamagotchi.name = 'Лоя';
+        userData.tamagotchi.experience = 300;
+    } else {
+        userData.tamagotchi.experience += 100;
+    }
+    
+    showNotification('🌟 Питомец эволюционировал!');
+    saveUserData();
+    updateTamagotchiUI();
+    updateTamagotchiImage();
 }
 
 // ЗАПУСК ПРИЛОЖЕНИЯ
