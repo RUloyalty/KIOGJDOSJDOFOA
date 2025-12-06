@@ -1127,6 +1127,8 @@ function checkQuestsCompletion() {
             completeQuest(quest);
         }
     });
+    
+    checkCharacterLevelUp();
 }
 
 function getCurrentQuests() {
@@ -1147,10 +1149,45 @@ function completeQuest(quest) {
     userData.totalEarnings += quest.reward;
     userData.completedQuests = Math.max(userData.completedQuests, quest.id);
     
+    userData.characterExperience += Math.floor(quest.reward / 10);
+    
     updateEarningsProgress(quest.reward);
-    showNotification(`✅ Задание! +${quest.reward} 🟡`);
+    showNotification(`✅ Задание! +${quest.reward} 🟡 и +${Math.floor(quest.reward / 10)} опыта!`);
     saveUserData();
     updateUI();
+    
+    checkCharacterLevelUp();
+}
+
+// ФУНКЦИЯ ПРОВЕРКИ ПОВЫШЕНИЯ УРОВНЯ ПЕРСОНАЖА
+function checkCharacterLevelUp() {
+    const oldLevel = userData.characterLevel;
+    const oldName = userData.currentCharacter;
+    
+    if (userData.characterExperience >= userData.characterExperienceToNext) {
+        if (userData.characterLevel === 'basic') {
+            userData.characterLevel = 'medium';
+            userData.currentCharacter = 'Есоулов';
+            userData.characterExperience = userData.characterExperience - userData.characterExperienceToNext;
+            userData.characterExperienceToNext = 200;
+            showNotification('🎉 Уровень персонажа повышен до Среднего! Теперь вы Есоулов!');
+        } else if (userData.characterLevel === 'medium') {
+            userData.characterLevel = 'mythical';
+            userData.currentCharacter = 'Лоя';
+            userData.characterExperience = userData.characterExperience - userData.characterExperienceToNext;
+            userData.characterExperienceToNext = 300;
+            showNotification('🏆 Уровень персонажа повышен до Мифического! Теперь вы Лоя!');
+        } else if (userData.characterLevel === 'mythical') {
+            userData.characterExperience = userData.characterExperience - userData.characterExperienceToNext;
+            userData.characterExperienceToNext = Math.floor(userData.characterExperienceToNext * 1.5);
+            showNotification('🌟 Опыт увеличен!');
+        }
+    }
+    
+    if (oldLevel !== userData.characterLevel) {
+        updateUI();
+        saveUserData();
+    }
 }
 
 function updateQuestsScreen() {
@@ -1225,19 +1262,26 @@ function updateMainScreen() {
     }
     
     const characterName = document.getElementById('currentCharacterName');
-    if (characterName && !window.Telegram?.WebApp?.initDataUnsafe?.user) {
+    if (characterName) {
         characterName.textContent = userData.currentCharacter;
     }
     
     const characterAvatar = document.getElementById('currentCharacterAvatar');
     if (characterAvatar) {
-        characterAvatar.textContent = userData.currentCharacter === 'Психика' ? '🧠' : '🌟';
+        if (userData.characterLevel === 'basic') {
+            characterAvatar.textContent = '🧠';
+        } else if (userData.characterLevel === 'medium') {
+            characterAvatar.textContent = '👑';
+        } else if (userData.characterLevel === 'mythical') {
+            characterAvatar.textContent = '🌟';
+        }
     }
     
     const characterLevel = document.getElementById('characterLevel');
     if (characterLevel) {
         const levelText = userData.characterLevel === 'basic' ? 'Базовый' : 
-                         userData.characterLevel === 'medium' ? 'Средний' : 'Профессионал';
+                         userData.characterLevel === 'medium' ? 'Средний' : 
+                         userData.characterLevel === 'mythical' ? 'Мифический' : 'Профессионал';
         characterLevel.textContent = levelText;
     }
     
@@ -1469,20 +1513,42 @@ function addCoins(amount) {
 }
 
 function levelUp() {
+    const oldLevel = userData.characterLevel;
+    const oldName = userData.currentCharacter;
+    
     if (userData.characterLevel === 'basic') {
         userData.characterLevel = 'medium';
+        userData.currentCharacter = 'Есоулов';
         userData.characterExperience = 0;
         userData.characterExperienceToNext = 200;
-        showNotification('⬆️ Уровень повышен до Среднего!');
+        showNotification('⬆️ Уровень повышен до Среднего! Теперь вы Есоулов!');
     } else if (userData.characterLevel === 'medium') {
-        userData.characterLevel = 'pro';
+        userData.characterLevel = 'mythical';
+        userData.currentCharacter = 'Лоя';
         userData.characterExperience = 0;
         userData.characterExperienceToNext = 300;
-        showNotification('⬆️ Уровень повышен до Профессионала!');
-    } else {
+        showNotification('⬆️ Уровень повышен до Мифического! Теперь вы Лоя!');
+    } else if (userData.characterLevel === 'mythical') {
         userData.characterExperience += 50;
-        showNotification('📈 Опыт увеличен на 50!');
+        if (userData.characterExperience >= userData.characterExperienceToNext) {
+            userData.characterExperience = userData.characterExperience - userData.characterExperienceToNext;
+            userData.characterExperienceToNext = Math.floor(userData.characterExperienceToNext * 1.5);
+            showNotification('🌟 Уровень повышен!');
+        } else {
+            showNotification('📈 Опыт увеличен на 50!');
+        }
     }
+    
+    if (oldLevel !== userData.characterLevel) {
+        const tgUser = window.Telegram?.WebApp?.initDataUnsafe?.user;
+        if (!tgUser) {
+            const characterName = document.getElementById('currentCharacterName');
+            if (characterName) {
+                characterName.textContent = userData.currentCharacter;
+            }
+        }
+    }
+    
     saveUserData();
     updateUI();
 }
