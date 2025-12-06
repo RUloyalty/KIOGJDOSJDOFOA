@@ -1,8 +1,10 @@
+/* Базовые стили для мобильных */
 * {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
     -webkit-tap-highlight-color: transparent;
+    -webkit-text-size-adjust: 100%;
 }
 
 :root {
@@ -16,99 +18,40 @@
     --success: #9C27B0;
     --danger: #E91E63;
     --warning: #FF4081;
+    --safe-area-top: env(safe-area-inset-top, 0px);
+    --safe-area-bottom: env(safe-area-inset-bottom, 0px);
 }
 
-/* Темы для Telegram */
-.theme-dark {
-    --primary: #8A2BE2;
-    --secondary: #9370DB;
-    --accent: #BA55D3;
-    --dark: #2D1B47;
-    --darker: #1A102C;
-    --light: #FFFFFF;
-    --gray: #4A3B6D;
-    --success: #9C27B0;
-    --danger: #E91E63;
-    --warning: #FF4081;
-}
-
-.theme-purple {
-    --primary: #6A0DAD;
-    --secondary: #8A2BE2;
-    --accent: #9370DB;
-    --dark: #4B0082;
-    --darker: #2D004F;
-    --light: #FFFFFF;
-    --gray: #6A5ACD;
-    --success: #8A2BE2;
-    --danger: #FF1493;
-    --warning: #DA70D6;
-}
-
-.theme-blue {
-    --primary: #1E90FF;
-    --secondary: #4169E1;
-    --accent: #00BFFF;
-    --dark: #000080;
-    --darker: #00004D;
-    --light: #FFFFFF;
-    --gray: #4682B4;
-    --success: #00CED1;
-    --danger: #DC143C;
-    --warning: #FFD700;
-}
-
-.theme-green {
-    --primary: #228B22;
-    --secondary: #32CD32;
-    --accent: #00FF00;
-    --dark: #006400;
-    --darker: #003D00;
-    --light: #FFFFFF;
-    --gray: #556B2F;
-    --success: #00FF7F;
-    --danger: #FF4500;
-    --warning: #ADFF2F;
-}
+/* Темы */
+.theme-dark { --primary: #8A2BE2; --secondary: #9370DB; --accent: #BA55D3; --dark: #2D1B47; }
+.theme-purple { --primary: #6A0DAD; --secondary: #8A2BE2; --accent: #9370DB; --dark: #4B0082; }
+.theme-blue { --primary: #1E90FF; --secondary: #4169E1; --accent: #00BFFF; --dark: #000080; }
+.theme-green { --primary: #228B22; --secondary: #32CD32; --accent: #00FF00; --dark: #006400; }
 
 body {
-    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
     background: var(--dark);
     color: var(--light);
     min-height: 100vh;
     overflow-x: hidden;
+    padding-top: var(--safe-area-top);
+    padding-bottom: var(--safe-area-bottom);
 }
 
 .app {
-    max-width: 100%;
-    margin: 0 auto;
-    min-height: 100vh;
+    max-width: 100vw;
+    min-height: calc(100vh - var(--safe-area-top) - var(--safe-area-bottom));
     background: var(--dark);
     position: relative;
 }
 
-/* Анимации для мобильных */
-@keyframes fadeIn {
-    from { opacity: 0; transform: translateY(10px); }
-    to { opacity: 1; transform: translateY(0); }
-}
-
-@keyframes pulse {
-    0%, 100% { transform: scale(1); }
-    50% { transform: scale(1.05); }
-}
-
-@keyframes spin {
-    0% { transform: rotate(0deg); }
-    100% { transform: rotate(360deg); }
-}
-
-/* Общие стили для Telegram */
+/* Экран */
 .screen {
     display: none;
-    min-height: 100vh;
-    padding: 16px;
+    min-height: calc(100vh - var(--safe-area-top) - var(--safe-area-bottom));
+    padding: 16px 12px;
     animation: fadeIn 0.3s ease-out;
+    position: relative;
 }
 
 .screen.active {
@@ -119,8 +62,8 @@ body {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    margin-bottom: 24px;
-    padding: 0 8px;
+    margin-bottom: 20px;
+    padding: 0 4px;
 }
 
 .back-btn {
@@ -130,20 +73,23 @@ body {
     width: 44px;
     height: 44px;
     color: var(--light);
-    font-size: 20px;
+    font-size: 24px;
     cursor: pointer;
     display: flex;
     align-items: center;
     justify-content: center;
+    flex-shrink: 0;
 }
 
 .screen-balance {
     background: linear-gradient(135deg, var(--primary), var(--accent));
-    padding: 8px 16px;
+    padding: 10px 16px;
     border-radius: 20px;
     font-weight: bold;
     color: var(--light);
     font-size: 14px;
+    white-space: nowrap;
+    margin-left: 12px;
 }
 
 /* Основной экран */
@@ -151,8 +97,8 @@ body {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 24px;
-    padding: 0 8px;
+    margin-bottom: 16px;
+    padding: 0 4px;
 }
 
 .user-profile {
@@ -170,6 +116,7 @@ body {
     align-items: center;
     justify-content: center;
     font-size: 24px;
+    flex-shrink: 0;
 }
 
 .username {
@@ -183,6 +130,7 @@ body {
     padding: 4px 8px;
     border-radius: 8px;
     color: var(--accent);
+    margin-top: 2px;
 }
 
 .balance-card {
@@ -199,21 +147,159 @@ body {
     color: var(--light);
 }
 
-.menu-grid {
+/* Тамагочи */
+.tamagotchi-section {
+    margin: 16px 4px 20px;
+}
+
+.tamagotchi-card {
+    background: var(--gray);
+    border-radius: 16px;
+    padding: 16px;
+    border: 2px solid var(--accent);
+}
+
+.tamagotchi-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 16px;
+}
+
+.tamagotchi-header h3 {
+    font-size: 18px;
+    color: var(--primary);
+}
+
+.tamagotchi-status {
+    background: var(--success);
+    color: white;
+    padding: 6px 12px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: bold;
+    white-space: nowrap;
+}
+
+.tamagotchi-body {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-bottom: 16px;
+}
+
+.tamagotchi-image {
+    width: 120px;
+    height: 120px;
+    border-radius: 50%;
+    margin-bottom: 16px;
+    overflow: hidden;
+    border: 4px solid var(--accent);
+    background: var(--dark);
+}
+
+.tamagotchi-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.tamagotchi-stats {
+    width: 100%;
+}
+
+.tamagotchi-stat {
+    display: flex;
+    align-items: center;
+    margin-bottom: 12px;
+}
+
+.stat-icon {
+    font-size: 20px;
+    margin-right: 12px;
+    width: 24px;
+    flex-shrink: 0;
+}
+
+.stat-info {
+    flex: 1;
+    min-width: 0;
+}
+
+.stat-label {
+    font-size: 12px;
+    margin-bottom: 4px;
+    color: var(--light);
+    opacity: 0.8;
+}
+
+.progress-bar {
+    background: rgba(255,255,255,0.1);
+    height: 6px;
+    border-radius: 3px;
+    overflow: hidden;
+    margin-top: 6px;
+}
+
+.progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--success), var(--accent));
+    border-radius: 3px;
+    transition: width 0.3s ease;
+    width: 0%;
+}
+
+.tamagotchi-actions {
     display: grid;
     grid-template-columns: 1fr 1fr;
-    gap: 12px;
-    margin-bottom: 24px;
+    gap: 8px;
+}
+
+.tamagotchi-btn {
+    background: var(--dark);
+    border: 2px solid var(--accent);
+    border-radius: 12px;
+    padding: 12px;
+    color: var(--light);
+    font-size: 14px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    white-space: nowrap;
+}
+
+.tamagotchi-btn:active {
+    transform: scale(0.98);
+    background: var(--accent);
+}
+
+/* Главное меню */
+.main-menu {
+    margin: 0 4px 20px;
+}
+
+.menu-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
 }
 
 .menu-card {
     background: var(--gray);
     border-radius: 16px;
-    padding: 20px;
+    padding: 16px;
     text-align: center;
     cursor: pointer;
     transition: all 0.2s ease;
     border: 2px solid transparent;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 120px;
 }
 
 .menu-card:active {
@@ -245,34 +331,109 @@ body {
     border-radius: 8px;
     font-size: 11px;
     font-weight: bold;
+    margin-top: 4px;
 }
 
-.progress-bar {
-    background: rgba(255,255,255,0.1);
-    height: 6px;
-    border-radius: 3px;
-    overflow: hidden;
-    margin-top: 6px;
+.cdr-reset-card {
+    grid-column: 1 / -1;
+    margin-top: 8px;
 }
 
-.progress-fill {
-    height: 100%;
-    background: linear-gradient(90deg, var(--success), var(--accent));
-    border-radius: 3px;
-    transition: width 0.3s ease;
+.cdr-reset {
+    border: 2px solid var(--warning);
+    border-radius: 12px;
+    padding: 16px;
+    background: rgba(255, 193, 7, 0.1);
 }
 
+.cdr-reset h3 {
+    margin-bottom: 12px;
+    color: var(--warning);
+    font-size: 16px;
+}
+
+.cdr-container {
+    text-align: center;
+}
+
+.cdr-btn {
+    background: linear-gradient(135deg, var(--warning), #FF9800);
+    border: none;
+    border-radius: 12px;
+    padding: 16px;
+    color: var(--light);
+    font-size: 14px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    width: 100%;
+    margin-bottom: 8px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+}
+
+.cdr-btn:active:not(:disabled) {
+    transform: scale(0.98);
+}
+
+.cdr-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.cdr-cost {
+    font-size: 12px;
+    opacity: 0.9;
+    background: rgba(0,0,0,0.2);
+    padding: 4px 8px;
+    border-radius: 8px;
+}
+
+.cdr-description {
+    font-size: 12px;
+    opacity: 0.8;
+    margin-bottom: 12px;
+    color: var(--warning);
+}
+
+.cdr-info {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    background: var(--dark);
+    padding: 12px;
+    border-radius: 8px;
+}
+
+.cdr-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 13px;
+    padding: 4px 0;
+}
+
+.cdr-icon {
+    font-size: 16px;
+    width: 24px;
+    text-align: center;
+}
+
+/* Статистика */
 .stats {
     display: flex;
     justify-content: space-around;
     background: var(--gray);
     padding: 16px;
     border-radius: 16px;
-    margin-bottom: 16px;
+    margin: 0 4px 16px;
 }
 
 .stat-item {
     text-align: center;
+    flex: 1;
 }
 
 .stat-value {
@@ -291,6 +452,7 @@ body {
     text-align: center;
     padding: 16px 0;
     border-top: 1px solid var(--gray);
+    margin: 0 4px;
 }
 
 .creator {
@@ -299,15 +461,15 @@ body {
     color: var(--accent);
 }
 
-/* Казино для мобильных */
+/* Казино */
 .casino-container {
     text-align: center;
-    padding: 0 8px;
+    padding: 0 4px;
 }
 
 .wheel-section {
     position: relative;
-    margin: 24px 0;
+    margin: 20px 0;
 }
 
 .wheel-container {
@@ -315,6 +477,7 @@ body {
     width: 280px;
     height: 280px;
     margin: 0 auto;
+    max-width: 90vw;
 }
 
 .wheel {
@@ -342,7 +505,7 @@ body {
     justify-content: center;
     font-weight: bold;
     color: var(--light);
-    font-size: 18px;
+    font-size: 24px;
 }
 
 .sector:nth-child(1) { transform: rotate(0deg); }
@@ -353,6 +516,7 @@ body {
 .sector-content {
     transform: rotate(45deg);
     font-weight: bold;
+    font-size: 24px;
 }
 
 .pointer {
@@ -372,7 +536,7 @@ body {
     background: linear-gradient(135deg, var(--primary), var(--accent));
     border: none;
     border-radius: 20px;
-    padding: 16px 32px;
+    padding: 18px 32px;
     font-size: 16px;
     font-weight: bold;
     color: var(--light);
@@ -381,6 +545,10 @@ body {
     width: 100%;
     max-width: 280px;
     margin: 16px 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
 }
 
 .spin-btn:active:not(:disabled) {
@@ -409,30 +577,31 @@ body {
     background: var(--gray);
     padding: 12px;
     border-radius: 12px;
-    margin: 12px 0;
+    margin: 12px auto;
     font-size: 14px;
+    max-width: 280px;
 }
 
-/* Работа для мобильных */
+/* Работа */
 .work-container {
     text-align: center;
-    padding: 0 8px;
+    padding: 0 4px;
 }
 
 .work-game {
     background: var(--gray);
-    padding: 24px;
+    padding: 24px 16px;
     border-radius: 20px;
 }
 
 .game-timer {
-    margin-bottom: 16px;
+    margin-bottom: 20px;
 }
 
 .timer-circle {
     position: relative;
-    width: 100px;
-    height: 100px;
+    width: 120px;
+    height: 120px;
     margin: 0 auto;
 }
 
@@ -449,17 +618,17 @@ body {
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
-    font-size: 24px;
+    font-size: 28px;
     font-weight: bold;
     color: var(--light);
 }
 
 .click-stats {
-    margin-bottom: 16px;
+    margin-bottom: 20px;
 }
 
 .click-count {
-    font-size: 32px;
+    font-size: 36px;
     font-weight: bold;
     color: var(--primary);
     margin-bottom: 4px;
@@ -482,6 +651,9 @@ body {
     cursor: pointer;
     margin: 16px 0;
     transition: all 0.1s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
 .work-click-btn:active {
@@ -492,13 +664,15 @@ body {
     font-size: 16px;
     font-weight: bold;
     color: var(--success);
+    margin-top: 16px;
 }
 
-/* Задания для мобильных */
+/* Задания */
 .quests-container {
     background: var(--gray);
     border-radius: 16px;
     padding: 16px;
+    margin: 0 4px;
 }
 
 .character-level-info {
@@ -527,6 +701,9 @@ body {
     display: flex;
     flex-direction: column;
     gap: 12px;
+    max-height: 60vh;
+    overflow-y: auto;
+    padding-right: 4px;
 }
 
 .quest-item {
@@ -546,15 +723,18 @@ body {
 .quest-title {
     font-weight: bold;
     font-size: 14px;
+    flex: 1;
+    margin-right: 8px;
 }
 
 .quest-reward {
     background: var(--success);
-    color: var(--light);
+    color: white;
     padding: 4px 8px;
     border-radius: 8px;
     font-size: 12px;
     font-weight: bold;
+    flex-shrink: 0;
 }
 
 .quest-description {
@@ -563,11 +743,123 @@ body {
     margin-bottom: 8px;
 }
 
-/* Настройки для мобильных */
+/* Магазин */
+.shop-container {
+    padding: 16px 4px;
+}
+
+.shop-categories {
+    display: flex;
+    overflow-x: auto;
+    gap: 8px;
+    margin-bottom: 20px;
+    padding-bottom: 8px;
+    -webkit-overflow-scrolling: touch;
+}
+
+.shop-category-btn {
+    background: var(--dark);
+    border: 2px solid var(--gray);
+    border-radius: 12px;
+    padding: 10px 16px;
+    color: var(--light);
+    font-size: 14px;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: all 0.2s ease;
+    flex-shrink: 0;
+}
+
+.shop-category-btn.active {
+    background: var(--primary);
+    border-color: var(--accent);
+}
+
+.shop-category-btn:active {
+    transform: scale(0.98);
+}
+
+.shop-items {
+    display: grid;
+    gap: 12px;
+    max-height: 65vh;
+    overflow-y: auto;
+    padding-right: 4px;
+    -webkit-overflow-scrolling: touch;
+}
+
+.shop-item {
+    background: var(--dark);
+    border-radius: 12px;
+    padding: 16px;
+    border: 2px solid var(--gray);
+}
+
+.shop-item-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: start;
+    margin-bottom: 12px;
+}
+
+.shop-item-name {
+    font-weight: bold;
+    font-size: 16px;
+    color: var(--accent);
+    margin-right: 8px;
+}
+
+.shop-item-price {
+    background: var(--success);
+    color: white;
+    padding: 4px 8px;
+    border-radius: 8px;
+    font-size: 12px;
+    font-weight: bold;
+    flex-shrink: 0;
+}
+
+.shop-item-desc {
+    font-size: 13px;
+    opacity: 0.8;
+    margin-bottom: 12px;
+    line-height: 1.4;
+}
+
+.shop-item-effects {
+    font-size: 12px;
+    color: var(--warning);
+    margin-bottom: 12px;
+}
+
+.shop-buy-btn {
+    background: linear-gradient(135deg, var(--primary), var(--accent));
+    border: none;
+    border-radius: 8px;
+    padding: 12px;
+    color: var(--light);
+    font-size: 14px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    width: 100%;
+}
+
+.shop-buy-btn:active {
+    transform: scale(0.98);
+}
+
+.shop-buy-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+/* Настройки */
 .settings-container {
     background: var(--gray);
     border-radius: 16px;
     padding: 16px;
+    margin: 0 4px;
 }
 
 .settings-section {
@@ -582,7 +874,7 @@ body {
 
 .theme-selector {
     display: grid;
-    grid-template-columns: 1fr 1fr;
+    grid-template-columns: repeat(2, 1fr);
     gap: 8px;
 }
 
@@ -685,10 +977,10 @@ body {
     font-size: 14px;
 }
 
-/* Уведомления для Telegram */
+/* Уведомления */
 .notification {
     position: fixed;
-    top: 16px;
+    top: calc(16px + var(--safe-area-top));
     left: 50%;
     transform: translateX(-50%);
     background: var(--success);
@@ -701,16 +993,40 @@ body {
     max-width: 90%;
     text-align: center;
     font-size: 14px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.3);
 }
 
 .notification.hidden {
     display: none;
 }
 
-/* Адаптивность для мобильных */
-@media (max-width: 480px) {
+/* Состояния питомца */
+.tamagotchi-status.hungry { background: var(--danger); }
+.tamagotchi-status.thirsty { background: #2196F3; }
+.tamagotchi-status.sad { background: #FF9800; }
+.tamagotchi-status.sleepy { background: #673AB7; }
+.tamagotchi-status.dead { background: #333; }
+
+.tamagotchi-image.dead {
+    border-color: #333;
+    filter: grayscale(1);
+}
+
+/* Анимации */
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+/* Адаптивность для маленьких экранов */
+@media (max-width: 360px) {
     .screen {
-        padding: 12px;
+        padding: 12px 8px;
     }
     
     .menu-grid {
@@ -729,352 +1045,42 @@ body {
         font-size: 18px;
     }
     
-    .theme-selector {
-        grid-template-columns: 1fr;
-    }
-    
-    .header {
-        flex-direction: column;
-        gap: 12px;
-        text-align: center;
-    }
-    
-    .user-profile {
-        justify-content: center;
+    .tamagotchi-image {
+        width: 100px;
+        height: 100px;
     }
 }
 
-/* Специальные стили для Telegram */
-.tg-theme-aware {
-    /* Telegram автоматически применяет свои темы */
+/* Высокие экраны */
+@media (min-height: 800px) {
+    .quests-list,
+    .shop-items {
+        max-height: 70vh;
+    }
 }
 
-/* Улучшаем touch-интерфейс */
-button {
+/* Поддержка Telegram */
+.telegram-background {
+    background: var(--darker) !important;
+}
+
+/* Улучшения для касаний */
+button, .menu-card {
+    touch-action: manipulation;
     user-select: none;
     -webkit-user-select: none;
 }
 
-.menu-card, .spin-btn, .work-click-btn {
-    touch-action: manipulation;
+/* Прокрутка на iOS */
+.quests-list::-webkit-scrollbar,
+.shop-items::-webkit-scrollbar,
+.shop-categories::-webkit-scrollbar {
+    display: none;
 }
 
-/* Тамагочи стили */
-.tamagotchi-section {
-    margin: 16px 8px 24px;
-}
-
-.tamagotchi-card {
-    background: var(--gray);
-    border-radius: 16px;
-    padding: 16px;
-    border: 2px solid var(--accent);
-}
-
-.tamagotchi-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 16px;
-}
-
-.tamagotchi-header h3 {
-    font-size: 18px;
-    color: var(--primary);
-}
-
-.tamagotchi-status {
-    background: var(--success);
-    color: white;
-    padding: 6px 12px;
-    border-radius: 20px;
-    font-size: 12px;
-    font-weight: bold;
-}
-
-.tamagotchi-body {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    margin-bottom: 16px;
-}
-
-.tamagotchi-image {
-    width: 120px;
-    height: 120px;
-    border-radius: 50%;
-    margin-bottom: 16px;
-    overflow: hidden;
-    border: 4px solid var(--accent);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-
-.tamagotchi-image img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-}
-
-.tamagotchi-stats {
-    width: 100%;
-}
-
-.tamagotchi-stat {
-    display: flex;
-    align-items: center;
-    margin-bottom: 12px;
-}
-
-.stat-icon {
-    font-size: 20px;
-    margin-right: 12px;
-    width: 30px;
-}
-
-.stat-info {
-    flex: 1;
-}
-
-.stat-label {
-    font-size: 12px;
-    margin-bottom: 4px;
-    color: var(--light);
-    opacity: 0.8;
-}
-
-.tamagotchi-actions {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 8px;
-}
-
-.tamagotchi-btn {
-    background: var(--dark);
-    border: 2px solid var(--accent);
-    border-radius: 12px;
-    padding: 10px;
-    color: var(--light);
-    font-size: 14px;
-    cursor: pointer;
-    transition: all 0.2s ease;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 8px;
-}
-
-.tamagotchi-btn:active {
-    transform: scale(0.98);
-    background: var(--accent);
-}
-
-/* Магазин тамагочи */
-.shop-container {
-    padding: 16px;
-}
-
+.quests-list,
+.shop-items,
 .shop-categories {
-    display: flex;
-    overflow-x: auto;
-    gap: 8px;
-    margin-bottom: 20px;
-    padding-bottom: 8px;
-}
-
-.shop-category-btn {
-    background: var(--dark);
-    border: 2px solid var(--gray);
-    border-radius: 12px;
-    padding: 10px 16px;
-    color: var(--light);
-    font-size: 14px;
-    cursor: pointer;
-    white-space: nowrap;
-    transition: all 0.2s ease;
-}
-
-.shop-category-btn.active {
-    background: var(--primary);
-    border-color: var(--accent);
-}
-
-.shop-category-btn:active {
-    transform: scale(0.98);
-}
-
-.shop-items {
-    display: grid;
-    gap: 12px;
-}
-
-.shop-item {
-    background: var(--dark);
-    border-radius: 12px;
-    padding: 16px;
-    border: 2px solid var(--gray);
-}
-
-.shop-item-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: start;
-    margin-bottom: 12px;
-}
-
-.shop-item-name {
-    font-weight: bold;
-    font-size: 16px;
-    color: var(--accent);
-}
-
-.shop-item-price {
-    background: var(--success);
-    color: white;
-    padding: 4px 8px;
-    border-radius: 8px;
-    font-size: 12px;
-    font-weight: bold;
-}
-
-.shop-item-desc {
-    font-size: 13px;
-    opacity: 0.8;
-    margin-bottom: 12px;
-    line-height: 1.4;
-}
-
-.shop-item-effects {
-    font-size: 12px;
-    color: var(--warning);
-    margin-bottom: 12px;
-}
-
-.shop-buy-btn {
-    background: linear-gradient(135deg, var(--primary), var(--accent));
-    border: none;
-    border-radius: 8px;
-    padding: 10px;
-    color: var(--light);
-    font-size: 14px;
-    font-weight: bold;
-    cursor: pointer;
-    transition: all 0.2s ease;
-    width: 100%;
-}
-
-.shop-buy-btn:active {
-    transform: scale(0.98);
-}
-
-.shop-buy-btn:disabled {
-    opacity: 0.5;
-    cursor: not-allowed;
-}
-
-/* Сброс КД */
-.cdr-reset {
-    border: 2px solid var(--warning);
-    border-radius: 12px;
-    padding: 16px;
-    background: rgba(255, 193, 7, 0.1);
-    grid-column: 1 / -1;
-    margin-top: 8px;
-}
-
-.cdr-container {
-    text-align: center;
-}
-
-.cdr-btn {
-    background: linear-gradient(135deg, var(--warning), #FF9800);
-    border: none;
-    border-radius: 12px;
-    padding: 16px;
-    color: var(--light);
-    font-size: 14px;
-    font-weight: bold;
-    cursor: pointer;
-    transition: all 0.2s ease;
-    width: 100%;
-    margin-bottom: 8px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 4px;
-}
-
-.cdr-btn:active:not(:disabled) {
-    transform: scale(0.98);
-}
-
-.cdr-btn:disabled {
-    opacity: 0.5;
-    cursor: not-allowed;
-}
-
-.cdr-cost {
-    font-size: 12px;
-    opacity: 0.9;
-    background: rgba(0,0,0,0.2);
-    padding: 4px 8px;
-    border-radius: 8px;
-}
-
-.cdr-description {
-    font-size: 12px;
-    opacity: 0.8;
-    margin-bottom: 12px;
-    color: var(--warning);
-}
-
-.cdr-info {
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-    background: var(--dark);
-    padding: 12px;
-    border-radius: 8px;
-}
-
-.cdr-item {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    font-size: 13px;
-    padding: 4px 0;
-}
-
-.cdr-icon {
-    font-size: 16px;
-    width: 24px;
-    text-align: center;
-}
-
-/* Плохие состояния питомца */
-.tamagotchi-status.hungry {
-    background: var(--danger);
-}
-
-.tamagotchi-status.thirsty {
-    background: #2196F3;
-}
-
-.tamagotchi-status.sad {
-    background: #FF9800;
-}
-
-.tamagotchi-status.sleepy {
-    background: #673AB7;
-}
-
-.tamagotchi-status.dead {
-    background: #333;
-}
-
-/* Смерть питомца */
-.tamagotchi-image.dead {
-    border-color: #333;
-    filter: grayscale(1);
+    -ms-overflow-style: none;
+    scrollbar-width: none;
 }
