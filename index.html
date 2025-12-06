@@ -2,7 +2,7 @@
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Желткоин Игра</title>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <link rel="stylesheet" href="style.css">
@@ -15,7 +15,7 @@
                 <div class="user-profile">
                     <div class="avatar" id="currentCharacterAvatar">🧠</div>
                     <div class="user-info">
-                        <div class="username" id="currentCharacterName">Психика</div>
+                        <div class="username" id="currentCharacterName">Игрок</div>
                         <div class="character-level" id="characterLevel">Базовый</div>
                     </div>
                 </div>
@@ -120,22 +120,24 @@
                         <div class="menu-desc">Тема и сброс</div>
                     </div>
 
-                    <div class="settings-section cdr-reset">
-                        <h3>⏰ Сброс таймер</h3>
-                        <div class="cdr-container">
-                            <button class="cdr-btn">
-                                <span class="cdr-title">Сбросить все таймеры</span>
-                                <span class="cdr-cost">20,000 🟡</span>
-                            </button>
-                            <p class="cdr-description">Сбросит таймер на Казино и Работу</p>
-                            <div class="cdr-info">
-                                <div class="cdr-item">
-                                    <span class="cdr-icon">🎰</span>
-                                    <span>Казино: <span id="casinoCdStatus">5:00</span></span>
-                                </div>
-                                <div class="cdr-item">
-                                    <span class="cdr-icon">💼</span>
-                                    <span>Работа: <span id="workCdStatus">60:00</span></span>
+                    <div class="cdr-reset-card">
+                        <div class="cdr-reset">
+                            <h3>⏰ Сброс таймер</h3>
+                            <div class="cdr-container">
+                                <button class="cdr-btn">
+                                    <span class="cdr-title">Сбросить все таймеры</span>
+                                    <span class="cdr-cost">20,000 🟡</span>
+                                </button>
+                                <p class="cdr-description">Сбросит таймер на Казино и Работу</p>
+                                <div class="cdr-info">
+                                    <div class="cdr-item">
+                                        <span class="cdr-icon">🎰</span>
+                                        <span>Казино: <span id="casinoCdStatus">5:00</span></span>
+                                    </div>
+                                    <div class="cdr-item">
+                                        <span class="cdr-icon">💼</span>
+                                        <span>Работа: <span id="workCdStatus">60:00</span></span>
+                                    </div>
                                 </div>
                             </div>
                         </div>
