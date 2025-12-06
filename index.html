@@ -1,0 +1,350 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Желткоин Игра</title>
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="app">
+        <!-- Основной экран -->
+        <div id="mainScreen" class="screen active">
+            <header class="header">
+                <div class="user-profile">
+                    <div class="avatar" id="currentCharacterAvatar">🧠</div>
+                    <div class="user-info">
+                        <div class="username" id="currentCharacterName">Психика</div>
+                        <div class="character-level" id="characterLevel">Базовый</div>
+                    </div>
+                </div>
+                <div class="balance-card">
+                    <div class="balance-amount" id="balanceDisplay">1,000 🟡</div>
+                </div>
+            </header>
+
+            <!-- Тамагочи -->
+            <div class="tamagotchi-section">
+                <div class="tamagotchi-card">
+                    <div class="tamagotchi-header">
+                        <h3>🐱 Мой питомец</h3>
+                        <div class="tamagotchi-status" id="tamagotchiStatus">😊 Счастлив</div>
+                    </div>
+                    <div class="tamagotchi-body">
+                        <div class="tamagotchi-image" id="tamagotchiImage">
+                            <img src="dima.png" alt="Питомец" id="tamagotchiImg">
+                        </div>
+                        <div class="tamagotchi-stats">
+                            <div class="tamagotchi-stat">
+                                <span class="stat-icon">🍖</span>
+                                <div class="stat-info">
+                                    <div class="stat-label">Голод</div>
+                                    <div class="progress-bar">
+                                        <div class="progress-fill" id="hungerBar"></div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="tamagotchi-stat">
+                                <span class="stat-icon">💧</span>
+                                <div class="stat-info">
+                                    <div class="stat-label">Жажда</div>
+                                    <div class="progress-bar">
+                                        <div class="progress-fill" id="thirstBar"></div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="tamagotchi-stat">
+                                <span class="stat-icon">🎮</span>
+                                <div class="stat-info">
+                                    <div class="stat-label">Счастье</div>
+                                    <div class="progress-bar">
+                                        <div class="progress-fill" id="happinessBar"></div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="tamagotchi-stat">
+                                <span class="stat-icon">💤</span>
+                                <div class="stat-info">
+                                    <div class="stat-label">Энергия</div>
+                                    <div class="progress-bar">
+                                        <div class="progress-fill" id="energyBar"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="tamagotchi-actions">
+                        <button class="tamagotchi-btn" onclick="feedTamagotchi()">🍖 Кормить</button>
+                        <button class="tamagotchi-btn" onclick="waterTamagotchi()">💧 Поить</button>
+                        <button class="tamagotchi-btn" onclick="playTamagotchi()">🎮 Играть</button>
+                        <button class="tamagotchi-btn" onclick="sleepTamagotchi()">💤 Спать</button>
+                    </div>
+                </div>
+            </div>
+
+            <main class="main-menu">
+                <div class="menu-grid">
+                    <div class="menu-card casino">
+                        <div class="menu-icon">🎰</div>
+                        <div class="menu-title">Казино</div>
+                        <div class="menu-desc">600 🟡 за спин</div>
+                        <div class="menu-badge" id="casinoTimer">Доступно</div>
+                    </div>
+                    
+                    <div class="menu-card work">
+                        <div class="menu-icon">💼</div>
+                        <div class="menu-title">Работа</div>
+                        <div class="menu-desc">До 80 🟡</div>
+                        <div class="menu-badge" id="workTimerBadge">Доступно</div>
+                    </div>
+                    
+                    <div class="menu-card quests">
+                        <div class="menu-icon">📋</div>
+                        <div class="menu-title">Задания</div>
+                        <div class="menu-desc" id="questsProgress">0/15</div>
+                        <div class="progress-bar">
+                            <div class="progress-fill" id="questProgressBar"></div>
+                        </div>
+                    </div>
+                    
+                    <div class="menu-card tamagotchi-shop">
+                        <div class="menu-icon">🛍️</div>
+                        <div class="menu-title">Магазин</div>
+                        <div class="menu-desc">Для питомца</div>
+                    </div>
+
+                    <div class="menu-card settings">
+                        <div class="menu-icon">⚙️</div>
+                        <div class="menu-title">Настройки</div>
+                        <div class="menu-desc">Тема и сброс</div>
+                    </div>
+
+                    <div class="settings-section cdr-reset">
+                        <h3>⏰ Сброс таймер</h3>
+                        <div class="cdr-container">
+                            <button class="cdr-btn">
+                                <span class="cdr-title">Сбросить все таймеры</span>
+                                <span class="cdr-cost">20,000 🟡</span>
+                            </button>
+                            <p class="cdr-description">Сбросит таймер на Казино и Работу</p>
+                            <div class="cdr-info">
+                                <div class="cdr-item">
+                                    <span class="cdr-icon">🎰</span>
+                                    <span>Казино: <span id="casinoCdStatus">5:00</span></span>
+                                </div>
+                                <div class="cdr-item">
+                                    <span class="cdr-icon">💼</span>
+                                    <span>Работа: <span id="workCdStatus">60:00</span></span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </main>
+            
+            <div class="stats">
+                <div class="stat-item">
+                    <div class="stat-value" id="totalSpins">0</div>
+                    <div class="stat-label">Спинов</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-value" id="totalEarnings">0</div>
+                    <div class="stat-label">Заработано</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-value" id="completedQuests">0</div>
+                    <div class="stat-label">Заданий</div>
+                </div>
+            </div>
+
+            <footer class="footer">
+                <div class="creator">@userloya</div>
+            </footer>
+        </div>
+
+        <!-- Экран казино -->
+        <div id="casinoScreen" class="screen">
+            <div class="screen-header">
+                <button class="back-btn">←</button>
+                <h2>🎰 Казино</h2>
+                <div class="screen-balance" id="casinoBalance">1,000 🟡</div>
+            </div>
+            
+            <div class="casino-container">
+                <div class="wheel-section">
+                    <div class="wheel-container">
+                        <div class="wheel" id="wheel">
+                            <div class="sector" data-multiplier="4">
+                                <div class="sector-content">X4</div>
+                            </div>
+                            <div class="sector" data-multiplier="0">
+                                <div class="sector-content">0</div>
+                            </div>
+                            <div class="sector" data-multiplier="2">
+                                <div class="sector-content">X2</div>
+                            </div>
+                            <div class="sector" data-multiplier="3">
+                                <div class="sector-content">X3</div>
+                            </div>
+                        </div>
+                        <div class="pointer"></div>
+                    </div>
+                </div>
+                
+                <div class="casino-controls">
+                    <button class="spin-btn" id="spinBtn">
+                        <span class="btn-text">Крутить за 600 🟡</span>
+                        <span class="btn-spinner">🌀</span>
+                    </button>
+                    
+                    <div class="cooldown-info" id="cooldownInfo">
+                        Следующий спин: <span id="cooldownTimer">5:00</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Экран работы -->
+        <div id="workScreen" class="screen">
+            <div class="screen-header">
+                <button class="back-btn">←</button>
+                <h2>💼 Работа</h2>
+                <div class="screen-balance" id="workBalance">1,000 🟡</div>
+            </div>
+            
+            <div class="work-container">
+                <div class="work-game">
+                    <div class="game-timer">
+                        <div class="timer-circle">
+                            <div class="timer-fill" id="timerFill"></div>
+                            <div class="timer-text" id="workTimer">30</div>
+                        </div>
+                    </div>
+                    
+                    <div class="click-stats">
+                        <div class="click-count" id="clickCount">0</div>
+                        <div class="click-label">кликов</div>
+                    </div>
+                    
+                    <button class="work-click-btn" id="workClickBtn">
+                        <span class="click-text">ЖМИ!</span>
+                    </button>
+                    
+                    <div class="earnings-preview">
+                        Заработано: <span id="currentEarnings">0</span> 🟡
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Экран заданий -->
+        <div id="questsScreen" class="screen">
+            <div class="screen-header">
+                <button class="back-btn">←</button>
+                <h2>📋 Задания</h2>
+                <div class="quests-progress" id="overallQuestProgress">0/15</div>
+            </div>
+            
+            <div class="quests-container">
+                <div class="character-level-info">
+                    <div class="level-badge" id="currentLevelBadge">Базовый</div>
+                    <div class="level-progress">
+                        <span id="currentLevelProgress">0</span>/15 заданий
+                        <div class="progress-bar">
+                            <div class="progress-fill" id="levelProgressBar"></div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="quests-list" id="questsList">
+                    <!-- Задания через JS -->
+                </div>
+            </div>
+        </div>
+
+        <!-- Экран магазина тамагочи -->
+        <div id="tamagotchiShopScreen" class="screen">
+            <div class="screen-header">
+                <button class="back-btn">←</button>
+                <h2>🛍️ Магазин питомца</h2>
+                <div class="screen-balance" id="shopBalance">1,000 🟡</div>
+            </div>
+            
+            <div class="shop-container">
+                <div class="shop-categories">
+                    <button class="shop-category-btn active" data-category="food">🍖 Еда</button>
+                    <button class="shop-category-btn" data-category="drinks">🥤 Напитки</button>
+                    <button class="shop-category-btn" data-category="toys">🧸 Игрушки</button>
+                    <button class="shop-category-btn" data-category="upgrades">⭐ Улучшения</button>
+                </div>
+                
+                <div class="shop-items" id="shopItems">
+                    <!-- Товары через JS -->
+                </div>
+            </div>
+        </div>
+
+        <!-- Экран настроек -->
+        <div id="settingsScreen" class="screen">
+            <div class="screen-header">
+                <button class="back-btn">←</button>
+                <h2>⚙️ Настройки</h2>
+            </div>
+            
+            <div class="settings-container">
+                <div class="settings-section">
+                    <h3>🎨 Тема</h3>
+                    <div class="theme-selector">
+                        <button class="theme-btn" data-theme="dark">
+                            <div class="theme-preview dark"></div>
+                            <span>Темная</span>
+                        </button>
+                        <button class="theme-btn" data-theme="purple">
+                            <div class="theme-preview purple"></div>
+                            <span>Фиолетовая</span>
+                        </button>
+                        <button class="theme-btn" data-theme="blue">
+                            <div class="theme-preview blue"></div>
+                            <span>Синяя</span>
+                        </button>
+                        <button class="theme-btn" data-theme="green">
+                            <div class="theme-preview green"></div>
+                            <span>Зеленая</span>
+                        </button>
+                    </div>
+                </div>
+
+                <div class="settings-section danger-zone">
+                    <h3>⚠️ Опасная зона</h3>
+                    <div class="danger-actions">
+                        <button class="reset-btn">
+                            🔄 Сбросить прогресс
+                        </button>
+                        <p class="warning-text">Начнете игру заново!</p>
+                    </div>
+                </div>
+
+                <div class="creator-info">
+                    <div class="creator-card">
+                        <div class="creator-avatar">👨‍💻</div>
+                        <div class="creator-details">
+                            <div class="creator-name">Создатель</div>
+                            <div class="creator-username">@userloya</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Уведомления -->
+        <div id="notification" class="notification hidden">
+            <div class="notification-content">
+                <span class="notification-text" id="notificationText"></span>
+            </div>
+        </div>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>
