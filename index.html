@@ -9,20 +9,27 @@
 </head>
 <body>
     <div class="app">
-        <!-- Основной экран -->
-        <div id="mainScreen" class="screen active">
-            <header class="header">
-                <div class="user-profile">
-                    <div class="avatar" id="currentCharacterAvatar">🧠</div>
-                    <div class="user-info">
-                        <div class="username" id="currentCharacterName">Игрок</div>
-                        <div class="character-level" id="characterLevel">Базовый</div>
+<!-- Основной экран -->
+<div id="mainScreen" class="screen active">
+    <header class="header">
+        <div class="user-profile">
+            <div class="avatar" id="currentCharacterAvatar">🧠</div>
+            <div class="user-info">
+                <div class="username" id="currentCharacterName">Игрок</div>
+                <div class="character-level" id="characterLevel">Базовый</div>
+                <!-- Добавляем шкалу опыта персонажа -->
+                <div class="character-experience">
+                    <div class="progress-bar">
+                        <div class="progress-fill" id="characterExperienceBar"></div>
                     </div>
+                    <div class="experience-text" id="characterExperienceText">0/100</div>
                 </div>
-                <div class="balance-card">
-                    <div class="balance-amount" id="balanceDisplay">1,000 🟡</div>
-                </div>
-            </header>
+            </div>
+        </div>
+        <div class="balance-card">
+            <div class="balance-amount" id="balanceDisplay">1,000 🟡</div>
+        </div>
+    </header>
 
             <!-- Тамагочи -->
             <div class="tamagotchi-section">
@@ -82,7 +89,14 @@
                     </div>
                 </div>
             </div>
-
+            <div class="character-level" id="characterLevel">Базовый</div>
+            <!-- Добавьте этот блок -->
+<div class="character-experience">
+    <div class="progress-bar">
+        <div class="progress-fill" id="characterExperienceBar"></div>
+    </div>
+    <div class="experience-text" id="characterExperienceText">0/100</div>
+</div>
             <main class="main-menu">
                 <div class="menu-grid">
                     <div class="menu-card casino">
